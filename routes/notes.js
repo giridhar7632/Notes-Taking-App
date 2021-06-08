@@ -4,7 +4,8 @@ import { getNotes, createNotes } from '../controllers/notes.js'
 
 const router = express.Router()
 
-router.get('/', getNotes)
-router.post('/', createNotes)
+router.route('/').get().post
+
+router.route('/:id').get().put().delete()
 
 export default router

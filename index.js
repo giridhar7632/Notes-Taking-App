@@ -4,7 +4,9 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 
 import notesRoute from './routes/notes.js'
+import usersRoute from './routes/users.js'
 
+// basic configuration
 dotenv.config()
 const app = express()
 const port = process.env.PORT || 5000
@@ -13,6 +15,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors())
 
+// connecting to mongodb atlas
 const uri = process.env.MONGO_URI
 mongoose
   .connect(uri, {
@@ -20,13 +23,16 @@ mongoose
     useUnifiedTopology: true,
     useFindAndModify: false,
   })
-  .then(() => console.log('MongoDB connection is established successfully 🚀'))
+  .then(() => console.log('MongoDB connection is established successfully 🎉'))
   .catch(err => console.log(err))
 
 app.get('/', (req, res) => {
-  res.json({ init: 'hello world 👋' })
+  res.send('Hello, World!! 👋')
 })
 
+// routes
 app.use('/notes', notesRoute)
+app.use('/users', usersRoute)
 
-app.listen(port, () => console.log('Server running on port ' + port))
+// listening the server
+app.listen(port, () => console.log(`Server listening on port ${port} 🚀`))
