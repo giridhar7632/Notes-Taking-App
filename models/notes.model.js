@@ -4,12 +4,25 @@ const { Schema } = mongoose
 
 const notesSchema = new Schema(
   {
-    title: String,
-    description: { type: String, required: true },
-    author: { type: String, required: true },
-    createAt: {
+    title: {
+      type: String,
+      default: 'Untitled',
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    user_id: {
+      type: String,
+      required: true,
+    },
+    date: {
       type: Date,
       default: new Date(),
+    },
+    name: {
+      type: String,
+      required: true,
     },
   },
   {

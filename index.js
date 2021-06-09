@@ -20,6 +20,7 @@ const uri = process.env.MONGO_URI
 mongoose
   .connect(uri, {
     useNewUrlParser: true,
+    useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
   })
@@ -31,7 +32,7 @@ app.get('/', (req, res) => {
 })
 
 // routes
-app.use('/notes', notesRoute)
+app.use('/api/notes', notesRoute)
 app.use('/users', usersRoute)
 
 // listening the server

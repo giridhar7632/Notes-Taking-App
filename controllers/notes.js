@@ -2,20 +2,65 @@ import Notes from '../models/notes.model.js'
 
 export const getNotes = async (req, res) => {
   try {
-    const notesModel = await Notes.find()
-    res.status(200).json(notesModel)
+    const notes = await Notes.find({ user_id: req.user.id })
+    res.json(notes)
   } catch (error) {
-    res.status(404).json(error)
+    res.status(400).json(error)
   }
 }
 
 export const createNotes = async (req, res) => {
-  const notes = req.body
-  const newNote = new Notes(notes)
   try {
+    // 1. Create a note
+    const { title, content, date } = req.body
+    const newNote = new Notes({
+      title,
+      content,
+      date,
+      user_id: req.user.id,
+      name: req.user.name,
+    })
+
+    // 2. Save note to database
     await newNote.save()
-    res.status(200).json(newNote)
+    res.status(200).json({ msg: 'Notes created. ✌' })
   } catch (error) {
-    res.status(404).json(error)
+    res.status(400).json(error)
+  }
+}
+
+export const getNote = async (req, res) => {
+  try {
+    const note = await Notes.findById(req.params.id)
+    res.json(note)
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+}
+
+export const deleteNote = async (req, res) => {
+  try {
+    await Notes.findByIdAndDelete(req.params.id)
+    res.json({ msg: 'Note Deleted' })
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+}
+
+export const updateNote = async (req, res) => {
+  try {
+    const { title, content, date } = req.body
+    await Notes.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        title,
+        content,
+        date,
+      }
+    )
+
+    res.json({ msg: 'Notes updated' })
+  } catch (error) {
+    return res.status(500).json(error)
   }
 }

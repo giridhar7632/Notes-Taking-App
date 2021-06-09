@@ -50,9 +50,27 @@ export const loginUser = async (req, res) => {
       expiresIn: '7d',
     })
 
-    res.json(token)
+    res.json({ token })
     //res.send('Sign in Successful ✌')
   } catch (error) {
     return res.status(400).json(error)
+  }
+}
+
+export const verifyUser = (req, res) => {
+  try {
+    const token = req.header('Authorization')
+
+    // 1. if there is no token
+    if (!token) return res.send(false)
+
+    // 2. Verify the token
+    jwt.verify(token, process.env.TOKEN_SECRET, async (err, verified) => {
+      if (err) return res.send(false)
+
+      return res.send(true)
+    })
+  } catch (error) {
+    res.status(500).json(error)
   }
 }

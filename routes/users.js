@@ -1,5 +1,5 @@
 import express from 'express'
-import { registerUser, loginUser } from '../controllers/users.js'
+import { registerUser, loginUser, verifyUser } from '../controllers/users.js'
 import auth from '../middleware/auth.js'
 
 const router = express.Router()
@@ -11,8 +11,6 @@ router.post('/register', registerUser)
 router.post('/login', loginUser)
 
 // 3. Verify token
-router.get('/verify', auth, (req, res) => {
-  console.log(req.user)
-})
+router.get('/verify', verifyUser)
 
 export default router

@@ -1,12 +1,14 @@
 import jwt from 'jsonwebtoken'
 
+const { verify } = jwt
+
 const auth = (req, res, next) => {
   try {
     const token = req.header('Authorization')
     if (!token) return res.status(400).json({ error: 'Invalid Authentication' })
 
-    jwt.verify(token, process.env.TOKEN_SCRET, (err, user) => {
-      if (err) return res.status(400).json({ error: 'Authorization not valid' })
+    verify(token, process.env.TOKEN_SECRET, (err, user) => {
+      if (err) return res.status(400).json({ error: 'Token not valid.' })
 
       req.user = user
       next()
