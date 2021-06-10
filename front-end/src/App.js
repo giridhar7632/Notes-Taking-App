@@ -5,6 +5,7 @@ import { ColorModeSwitcher } from './ColorModeSwitcher'
 import Login from './components/Login'
 import NotesShell from './components/NotesShell'
 import axios from 'axios'
+import Header from './components/notes/Header'
 
 function App() {
   const [isLogin, setIsLogin] = useState(false)
@@ -24,12 +25,17 @@ function App() {
     }
     checkLogin()
   }, [])
+
   return (
     <ChakraProvider theme={theme}>
       <Flex p={8} h="100vh" flexDirection="column" textAlign="center">
-        <Flex justifyContent="flex-end">
-          <ColorModeSwitcher justifySelf="flex-end" />
-        </Flex>
+        {isLogin ? (
+          <Header setIsLogin={setIsLogin} />
+        ) : (
+          <Flex justifyContent="flex-end">
+            <ColorModeSwitcher justifySelf="flex-end" />
+          </Flex>
+        )}
         <Flex maxW="100%" justifyContent="center" mt={8}>
           {isLogin ? <NotesShell /> : <Login setIsLogin={setIsLogin} />}
         </Flex>
