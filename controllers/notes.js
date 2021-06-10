@@ -5,7 +5,7 @@ export const getNotes = async (req, res) => {
     const notes = await Notes.find({ user_id: req.user.id })
     res.json(notes)
   } catch (error) {
-    res.status(400).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }
 
@@ -25,7 +25,7 @@ export const createNotes = async (req, res) => {
     await newNote.save()
     res.status(200).json({ msg: 'Notes created. ✌' })
   } catch (error) {
-    res.status(400).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }
 
@@ -34,7 +34,7 @@ export const getNote = async (req, res) => {
     const note = await Notes.findById(req.params.id)
     res.json(note)
   } catch (error) {
-    return res.status(500).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }
 
@@ -43,7 +43,7 @@ export const deleteNote = async (req, res) => {
     await Notes.findByIdAndDelete(req.params.id)
     res.json({ msg: 'Note Deleted' })
   } catch (error) {
-    return res.status(500).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }
 
@@ -61,6 +61,6 @@ export const updateNote = async (req, res) => {
 
     res.json({ msg: 'Notes updated' })
   } catch (error) {
-    return res.status(500).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }

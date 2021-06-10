@@ -10,8 +10,8 @@ export const registerUser = async (req, res) => {
     // 1. Check if user already exists
     if (user)
       return res
-        .status(400)
-        .json({ error: 'User already exists with the email.' })
+        .status(500)
+        .json({ msg: 'Email already exists.', type: 'error' })
 
     // 2. Encrypt password
     const passwordHash = await hash(password, 10)
@@ -23,9 +23,9 @@ export const registerUser = async (req, res) => {
       password: passwordHash,
     })
     await newUser.save()
-    res.send('Registered Successfully 🥳')
+    res.json({ msg: 'Registered Successfully 🥳', type: 'success' })
   } catch (error) {
-    return res.status(400).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }
 
@@ -37,23 +37,27 @@ export const loginUser = async (req, res) => {
     const user = await Users.findOne({ email: email })
 
     // 2. If user dosen't exists
-    if (!user) return res.status(400).json({ error: 'User does not exist. 😕' })
+    if (!user)
+      return res
+        .status(500)
+        .json({ msg: 'User does not exist. 😕', type: 'warning' })
 
     // 3. Check for password match
     const isMatch = await compare(password, user.password)
     if (!isMatch)
-      return res.status(400).json({ error: 'Incorrect password. ⚠' })
+      return res
+        .status(500)
+        .json({ msg: 'Incorrect password. ⚠', type: 'error' })
 
     // 4. if login success, create a token
     const payload = { id: user._id, name: user.username }
     const token = jwt.sign(payload, process.env.TOKEN_SECRET, {
-      expiresIn: '7d',
+      expiresIn: '1d',
     })
 
-    res.json({ token })
-    //res.send('Sign in Successful ✌')
+    res.json({ token, msg: 'Sign in Successful ✌', type: 'success' })
   } catch (error) {
-    return res.status(400).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }
 
@@ -71,6 +75,6 @@ export const verifyUser = (req, res) => {
       return res.send(true)
     })
   } catch (error) {
-    res.status(500).json(error)
+    return res.status(500).json({ msg: error.message })
   }
 }
