@@ -13,6 +13,7 @@ const Login = ({ setIsLogin }) => {
     password: '',
   })
   const [show, setShow] = useState(false)
+  const [isRegistered, setIsRegistered] = useState(true)
 
   const toast = useToast()
   const toastIdRef = useRef()
@@ -30,6 +31,8 @@ const Login = ({ setIsLogin }) => {
     setUser({ ...user, [name]: value })
   }
   const handlePassword = () => setShow(!show)
+  const handleResigter = () => setIsRegistered(!isRegistered)
+  const handleLogin = () => setIsRegistered(!isRegistered)
 
   const registerUser = async e => {
     e.preventDefault()
@@ -41,6 +44,7 @@ const Login = ({ setIsLogin }) => {
       })
       setUser({ name: '', email: '', password: '' })
       addToast(res.data.msg, res.data.type)
+      setIsRegistered(true)
     } catch (error) {
       error.response.data.msg &&
         addToast(error.response.data.msg, error.response.data.type)
@@ -66,108 +70,116 @@ const Login = ({ setIsLogin }) => {
 
   return (
     <Stack direction="column">
-      <Flex
-        className="login"
-        p="6"
-        flexDirection="column"
-        justifyContent="center"
-      >
-        <form onSubmit={userLogin}>
-          <Heading as="h2" size="lg" textAlign="center" mb={6}>
-            Login
-          </Heading>
-          <FormControl id="email" isRequired>
-            <FormLabel>Email</FormLabel>
-            <Input
-              type="email"
-              name="email"
-              value={user.email}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-          </FormControl>
-          <FormControl id="password" mt="2" isRequired>
-            <FormLabel>Password</FormLabel>
-            <InputGroup size="md">
+      {isRegistered ? (
+        <Flex
+          className="login"
+          p="6"
+          flexDirection="column"
+          justifyContent="center"
+        >
+          <form onSubmit={userLogin}>
+            <Heading as="h2" size="lg" textAlign="center" mb={6}>
+              Login
+            </Heading>
+            <FormControl id="email" isRequired>
+              <FormLabel>Email</FormLabel>
               <Input
-                pr="4.5rem"
-                type={show ? 'text' : 'password'}
-                name="password"
-                value={user.password}
+                type="email"
+                name="email"
+                value={user.email}
                 onChange={handleChange}
-                placeholder="Enter password"
+                placeholder="Email"
               />
-              <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={handlePassword}>
-                  {show ? 'Hide' : 'Show'}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-          <Button mt={6} type="submit" colorScheme="purple" variant="solid">
-            Login
-          </Button>
-        </form>
-        <Text mt={6}>
-          Don't have an account? <Link color="purple.500">Register now</Link>
-        </Text>
-      </Flex>
-
-      <Flex
-        className="register"
-        p="6"
-        flexDirection="column"
-        justifyContent="center"
-      >
-        <form onSubmit={registerUser}>
-          <Heading as="h2" size="lg" textAlign="center" mb={6}>
-            Register
-          </Heading>
-          <FormControl id="username" isRequired>
-            <FormLabel>Username</FormLabel>
-            <Input
-              value={user.name}
-              name="name"
-              onChange={handleChange}
-              placeholder="Username"
-            />
-          </FormControl>
-          <FormControl id="email" mt="2" isRequired>
-            <FormLabel>Email</FormLabel>
-            <Input
-              type="email"
-              name="email"
-              value={user.email}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-          </FormControl>
-          <FormControl id="password" mt="2" isRequired>
-            <FormLabel>Password</FormLabel>
-            <InputGroup size="md">
+            </FormControl>
+            <FormControl id="password" mt="2" isRequired>
+              <FormLabel>Password</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  pr="4.5rem"
+                  type={show ? 'text' : 'password'}
+                  name="password"
+                  value={user.password}
+                  onChange={handleChange}
+                  placeholder="Enter password"
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handlePassword}>
+                    {show ? 'Hide' : 'Show'}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <Button mt={6} type="submit" colorScheme="purple" variant="solid">
+              Login
+            </Button>
+          </form>
+          <Text mt={6}>
+            Don't have an account?{' '}
+            <Link color="purple.500" onClick={handleResigter}>
+              Register now
+            </Link>
+          </Text>
+        </Flex>
+      ) : (
+        <Flex
+          className="register"
+          p="6"
+          flexDirection="column"
+          justifyContent="center"
+        >
+          <form onSubmit={registerUser}>
+            <Heading as="h2" size="lg" textAlign="center" mb={6}>
+              Register
+            </Heading>
+            <FormControl id="username" isRequired>
+              <FormLabel>Username</FormLabel>
               <Input
-                pr="4.5rem"
-                type={show ? 'text' : 'password'}
-                value={user.password}
-                name="password"
+                value={user.name}
+                name="name"
                 onChange={handleChange}
-                placeholder="Enter password"
+                placeholder="Username"
               />
-              <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={handlePassword}>
-                  {show ? 'Hide' : 'Show'}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-          <Button mt={6} type="submit" colorScheme="purple" variant="solid">
-            Register
-          </Button>
-        </form>
-        <Text mt={6}>
-          Already have an account? <Link color="purple.500">Sign in</Link>
-        </Text>
-      </Flex>
+            </FormControl>
+            <FormControl id="email" mt="2" isRequired>
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                name="email"
+                value={user.email}
+                onChange={handleChange}
+                placeholder="Email"
+              />
+            </FormControl>
+            <FormControl id="password" mt="2" isRequired>
+              <FormLabel>Password</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  pr="4.5rem"
+                  type={show ? 'text' : 'password'}
+                  value={user.password}
+                  name="password"
+                  onChange={handleChange}
+                  placeholder="Enter password"
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handlePassword}>
+                    {show ? 'Hide' : 'Show'}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <Button mt={6} type="submit" colorScheme="purple" variant="solid">
+              Register
+            </Button>
+          </form>
+          <Text mt={6}>
+            Already have an account?{' '}
+            <Link color="purple.500" onClick={handleLogin}>
+              Sign in
+            </Link>
+          </Text>
+        </Flex>
+      )}
     </Stack>
   )
 }
