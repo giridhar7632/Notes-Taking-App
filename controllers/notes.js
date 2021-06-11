@@ -23,7 +23,7 @@ export const createNotes = async (req, res) => {
 
     // 2. Save note to database
     await newNote.save()
-    res.status(200).json({ msg: 'Notes created. ✌' })
+    res.status(200).json({ msg: 'Notes created. ✌', type: 'success' })
   } catch (error) {
     return res.status(500).json({ msg: error.message })
   }
@@ -41,7 +41,7 @@ export const getNote = async (req, res) => {
 export const deleteNote = async (req, res) => {
   try {
     await Notes.findByIdAndDelete(req.params.id)
-    res.json({ msg: 'Note Deleted' })
+    res.json({ msg: 'Note Deleted', type: 'success' })
   } catch (error) {
     return res.status(500).json({ msg: error.message })
   }
@@ -59,7 +59,7 @@ export const updateNote = async (req, res) => {
       }
     )
 
-    res.json({ msg: 'Notes updated' })
+    res.json({ msg: 'Notes updated 🎉', type: 'info' })
   } catch (error) {
     return res.status(500).json({ msg: error.message })
   }

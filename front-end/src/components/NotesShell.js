@@ -1,22 +1,112 @@
-import React from 'react'
-import Home from './notes/Home'
-import { Flex, Grid } from '@chakra-ui/layout'
-import Note from './notes/Note'
+import React, { useState, useEffect } from 'react'
+import { IconButton } from '@chakra-ui/button'
+import {
+  Flex,
+  Grid,
+  Box,
+  Heading,
+  HStack,
+  Stack,
+  Text,
+} from '@chakra-ui/layout'
+import { format } from 'timeago.js'
+import { FaTrashAlt } from 'react-icons/fa'
+import EditNote from './notes/EditNote'
+import axios from 'axios'
 
 const NotesShell = () => {
+  const [notes, setNotes] = useState([])
+  const [token, setToken] = useState('')
+
+  const getNotes = async token => {
+    const res = await axios.get('api/notes', {
+      headers: { Authorization: token },
+    })
+    setNotes(res.data)
+    console.log(res.data)
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem('tokenStore')
+    setToken(token)
+    if (token) {
+      getNotes(token)
+    }
+  }, [])
+
+  const deleteNote = async id => {
+    try {
+      if (token) {
+        await axios.delete(`api/notes/${id}`, {
+          headers: { Authorization: token },
+        })
+        getNotes(token)
+      }
+    } catch (error) {
+      window.location.href = '/'
+    }
+  }
+
   return (
-    <Flex w="100%" flexDirection="column">
-      <Home />
-      <Grid
-        templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
-        gap={6}
-        w="100%"
-      >
-        <Note />
-        <Note />
-        <Note />
-        <Note />
-      </Grid>
+    <Flex w="100%" flexDirection="column" mb={8}>
+      {!notes.length ? (
+        <Flex
+          h={['30vh', '50vh']}
+          w="100%"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontSize={['2xl', '3xl']} opacity="0.2">
+            No Notes Added
+          </Text>
+        </Flex>
+      ) : (
+        <Grid
+          templateColumns={[
+            'repeat(1, 1fr)',
+            'repeat(2, 1fr)',
+            'repeat(3, 1fr)',
+          ]}
+          gap={6}
+          m="0 auto"
+          w={['100%', '90%', '85%']}
+        >
+          {notes.map(note => (
+            <Box
+              w="100%"
+              p={5}
+              shadow="md"
+              borderWidth="1px"
+              flex="1"
+              borderRadius="md"
+              key={note._id}
+            >
+              <Heading size="md" isTruncated>
+                {note.title}
+              </Heading>
+              <Text my={4} noOfLines={[3, 4, 5]}>
+                {note.content}
+              </Text>
+              <Stack spacing={4}>
+                <HStack justifyContent="space-between">
+                  <Text color="purple.500">{note.name}</Text>
+                  <Text>{format(note.date)}</Text>
+                </HStack>
+                <HStack justifyContent="space-between">
+                  <EditNote noteId={note._id}>Edit</EditNote>
+                  <IconButton
+                    onClick={() => deleteNote(note._id)}
+                    colorScheme="red"
+                    variant="solid"
+                    size="md"
+                    icon={<FaTrashAlt />}
+                  ></IconButton>
+                </HStack>
+              </Stack>
+            </Box>
+          ))}
+        </Grid>
+      )}
     </Flex>
   )
 }
