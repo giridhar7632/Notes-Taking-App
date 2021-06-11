@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import path from 'path'
 
 import notesRoute from './routes/notes.js'
 import usersRoute from './routes/users.js'
@@ -27,13 +28,16 @@ mongoose
   .then(() => console.log('MongoDB connection is established successfully 🎉'))
   .catch(err => console.log(err))
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!! 👋')
-})
-
 // routes
 app.use('/api/notes', notesRoute)
 app.use('/users', usersRoute)
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'))
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 // listening the server
 app.listen(port, () => console.log(`Server listening on port ${port} 🚀`))
