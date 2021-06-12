@@ -23,7 +23,6 @@ const NotesShell = () => {
       headers: { Authorization: token },
     })
     setNotes(res.data)
-    console.log(res.data)
   }
 
   useEffect(() => {
