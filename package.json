@@ -6,13 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "server": "nodemon index.js",
-    "client": "cd front-end && npm start",
-    "client-install": "cd front-end && npm install",
-    "server-install": "npm install",
-    "install": "concurrently \"npm run client-install\" \"npm run server-install\" ",
-    "dev": "concurrently \"npm run client\" \"npm run server\" ",
-    "heroku-postbuild": "cd clinet && npm install && npm run build"
+    "dev": "nodemon index.js"
   },
   "keywords": [
     "node.js",
