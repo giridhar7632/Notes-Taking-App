@@ -16,6 +16,9 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors())
 
+// front-end
+app.use(express.static('build'))
+
 // connecting to mongodb atlas
 const uri = process.env.MONGO_URI
 mongoose

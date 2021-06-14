@@ -44,7 +44,6 @@ const Login = ({ setIsLogin }) => {
       })
       setUser({ name: '', email: '', password: '' })
       addToast(res.data.msg, res.data.type)
-      setIsLogin(true)
       setIsRegistered(true)
     } catch (error) {
       error.response.data.msg &&
